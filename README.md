@@ -70,7 +70,7 @@ Restart HA so it picks up the new integration. The custom Lovelace card is bundl
    - **Step 3**: Optionally assign person entities and choose an icon
 4. Repeat for each chore you want to track
 
-Each chore creates a sensor entity with the ID `sensor.chores_<name>` (umlauts are transliterated, e.g. "Mull rausbringen" becomes `sensor.chores_muell_rausbringen`).
+Each chore creates a sensor entity with the ID `sensor.chores_<name>` (umlauts are transliterated, e.g. "Müll rausbringen" becomes `sensor.chores_muell_rausbringen`).
 
 ## Editing Chores
 
