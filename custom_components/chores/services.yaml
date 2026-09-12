@@ -1,0 +1,46 @@
+mark_done:
+  name: Mark chore as done
+  description: Mark a chore as completed, log who did it, and recalculate the next due date.
+  fields:
+    entity_id:
+      name: Entity
+      description: The chore entity to mark as done (e.g. sensor.chores_take_out_trash).
+      example: "sensor.chores_take_out_trash"
+      selector:
+        entity:
+          domain: sensor
+          integration: chores
+    chore_id:
+      name: Chore ID
+      description: The unique chore identifier (config entry ID). Use this or entity_id.
+      example: "abc123..."
+    person:
+      name: Person
+      description: The person entity who completed the chore.
+      example: "person.marc"
+      selector:
+        entity:
+          domain: person
+    notes:
+      name: Notes
+      description: Optional notes about this completion.
+      example: "Did extra cleaning"
+      selector:
+        text:
+
+reset:
+  name: Reset chore
+  description: Reset a chore's completion state (clears last done, next due, and completion log).
+  fields:
+    entity_id:
+      name: Entity
+      description: The chore entity to reset.
+      example: "sensor.chores_take_out_trash"
+      selector:
+        entity:
+          domain: sensor
+          integration: chores
+    chore_id:
+      name: Chore ID
+      description: The unique chore identifier (config entry ID). Use this or entity_id.
+      example: "abc123..."

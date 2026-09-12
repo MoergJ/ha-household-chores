@@ -1,0 +1,12 @@
+{
+  "domain": "chores",
+  "name": "Household Chores",
+  "documentation": "https://github.com/marc/ha-recurring-tasks",
+  "issue_tracker": "https://github.com/marc/ha-recurring-tasks/issues",
+  "dependencies": [],
+  "codeowners": ["@marc"],
+  "requirements": [],
+  "iot_class": "local_polling",
+  "version": "0.1.0",
+  "config_flow": true
+}

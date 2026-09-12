@@ -1,0 +1,74 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add a Chore",
+        "description": "Create a new household chore to track.",
+        "data": {
+          "name": "Chore name",
+          "frequency_type": "Frequency type"
+        }
+      },
+      "interval": {
+        "title": "Interval Frequency",
+        "description": "How often should this chore be done?",
+        "data": {
+          "frequency_value": "Every",
+          "frequency_unit": "Unit"
+        }
+      },
+      "schedule": {
+        "title": "Schedule Frequency",
+        "description": "On which days should this chore be done?",
+        "data": {
+          "schedule": "Days of the week"
+        }
+      },
+      "details": {
+        "title": "Chore Details",
+        "description": "Assign people and choose an icon.",
+        "data": {
+          "assignees": "Assigned to",
+          "icon": "Icon"
+        }
+      }
+    },
+    "error": {
+      "already_exists": "A chore with this name already exists."
+    },
+    "abort": {
+      "already_exists": "A chore with this name already exists."
+    }
+  },
+  "selector": {
+    "frequency_type": {
+      "options": {
+        "interval": "Interval (every X days/weeks/months)",
+        "schedule": "Schedule (specific days of the week)"
+      }
+    },
+    "frequency_unit": {
+      "options": {
+        "days": "Days",
+        "weeks": "Weeks",
+        "months": "Months"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Edit Chore",
+        "description": "Modify the chore configuration.",
+        "data": {
+          "name": "Chore name",
+          "frequency_value": "Every",
+          "frequency_unit": "Unit",
+          "schedule": "Days of the week",
+          "assignees": "Assigned to",
+          "icon": "Icon"
+        }
+      }
+    }
+  }
+}

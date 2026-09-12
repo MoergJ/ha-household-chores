@@ -1,0 +1,74 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Aufgabe hinzufügen",
+        "description": "Eine neue Haushaltsaufgabe zum Verfolgen anlegen.",
+        "data": {
+          "name": "Aufgabenname",
+          "frequency_type": "Häufigkeitstyp"
+        }
+      },
+      "interval": {
+        "title": "Intervall-Häufigkeit",
+        "description": "Wie oft soll diese Aufgabe erledigt werden?",
+        "data": {
+          "frequency_value": "Alle",
+          "frequency_unit": "Einheit"
+        }
+      },
+      "schedule": {
+        "title": "Zeitplan-Häufigkeit",
+        "description": "An welchen Tagen soll diese Aufgabe erledigt werden?",
+        "data": {
+          "schedule": "Wochentage"
+        }
+      },
+      "details": {
+        "title": "Aufgabendetails",
+        "description": "Personen zuweisen und ein Symbol auswählen.",
+        "data": {
+          "assignees": "Zugewiesen an",
+          "icon": "Symbol"
+        }
+      }
+    },
+    "error": {
+      "already_exists": "Eine Aufgabe mit diesem Namen existiert bereits."
+    },
+    "abort": {
+      "already_exists": "Eine Aufgabe mit diesem Namen existiert bereits."
+    }
+  },
+  "selector": {
+    "frequency_type": {
+      "options": {
+        "interval": "Intervall (alle X Tage/Wochen/Monate)",
+        "schedule": "Zeitplan (bestimmte Wochentage)"
+      }
+    },
+    "frequency_unit": {
+      "options": {
+        "days": "Tage",
+        "weeks": "Wochen",
+        "months": "Monate"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Aufgabe bearbeiten",
+        "description": "Konfiguration der Aufgabe ändern.",
+        "data": {
+          "name": "Aufgabenname",
+          "frequency_value": "Alle",
+          "frequency_unit": "Einheit",
+          "schedule": "Wochentage",
+          "assignees": "Zugewiesen an",
+          "icon": "Symbol"
+        }
+      }
+    }
+  }
+}
