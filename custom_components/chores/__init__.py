@@ -8,6 +8,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
 from .const import DOMAIN, PLATFORMS
+from .frontend import async_register_frontend
 from .services import async_setup_services
 from .storage import ChoreStorage
 
@@ -27,6 +28,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await storage.async_load()
         hass.data[DOMAIN] = {"storage": storage}
         async_setup_services(hass)
+        await async_register_frontend(hass)
         _LOGGER.info("Chores integration initialized")
     else:
         storage = hass.data[DOMAIN]["storage"]

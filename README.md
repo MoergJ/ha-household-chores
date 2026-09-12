@@ -29,11 +29,14 @@ config/
         ├── config_flow.py
         ├── const.py
         ├── entity.py
+        ├── frontend.py
         ├── sensor.py
         ├── services.py
         ├── services.yaml
         ├── storage.py
         ├── helpers.py
+        ├── www/
+        │   └── chores-card.js
         └── translations/
             ├── en.json
             └── de.json
@@ -41,47 +44,9 @@ config/
 
 If you already have a `custom_components/` directory, just add the `chores/` subdirectory.
 
-### 2. Install the dashboard card
+### 2. Restart Home Assistant
 
-Copy `frontend/chores-card.js` to your `www/` directory:
-
-```
-config/
-└── www/
-    └── chores-card.js
-```
-
-### 3. Register the dashboard resource
-
-This step is required for the custom card to load. Without it, the dashboard will show an error that the card type `custom:chores-card` is not found.
-
-In Home Assistant:
-
-1. Go to **Settings > Dashboards**
-2. Click the three dots in the top right > **Resources**
-3. Click **Add resource**
-4. URL: `/local/chores-card.js`
-5. Resource type: **JavaScript module**
-6. Click **Create**
-
-### 4. Register the dashboard
-
-Add the following to your `configuration.yaml`:
-
-```yaml
-dashboards:
-  chores:
-    mode: yaml
-    title: Chores
-    filename: dashboards/chores.yaml
-    icon: mdi:clipboard-check
-```
-
-Copy the `dashboards/chores.yaml` file into your config directory under `dashboards/`.
-
-### 5. Restart Home Assistant
-
-Restart HA so it picks up the new integration, resource, and dashboard.
+Restart HA so it picks up the new integration. The custom Lovelace card is bundled with the integration and registered automatically on startup -- no manual resource setup or file copying needed.
 
 ## Adding Chores
 
@@ -133,14 +98,46 @@ Reset a chore's completion state. Clears last done, next due, and the completion
 | `entity_id` | One of entity_id/chore_id | The chore sensor entity ID |
 | `chore_id` | One of entity_id/chore_id | The config entry ID |
 
-## Dashboard
+## Using the Chores Card
 
-The pre-configured dashboard has two sections:
+The integration includes a custom Lovelace card (`custom:chores-card`) that automatically discovers all `sensor.chores_*` entities. Add it to any of your existing dashboards.
 
-- **Due now**: chores that are currently due or overdue
-- **Upcoming**: chores that are pending (not yet due)
+### Card configuration
 
-Each chore row shows:
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `type` | string | -- | Must be `custom:chores-card` |
+| `title` | string | none | Optional heading displayed above the chore list |
+| `only_state` | string | none | Filter to a single state: `due` or `pending`. Omit to show all. |
+
+### Examples
+
+Show only due chores:
+
+```yaml
+type: custom:chores-card
+title: Due now
+only_state: due
+```
+
+Show only upcoming chores:
+
+```yaml
+type: custom:chores-card
+title: Upcoming
+only_state: pending
+```
+
+Show all chores:
+
+```yaml
+type: custom:chores-card
+title: All chores
+```
+
+### What the card shows
+
+Each chore row displays:
 - Name and icon
 - Due status (e.g. "Due today", "3 days overdue", "Due in 5 days")
 - Assigned persons
