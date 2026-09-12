@@ -10,6 +10,50 @@ class ChoresCard extends HTMLElement {
     this.attachShadow({ mode: 'open' });
   }
 
+  static get STRINGS() {
+    return {
+      en: {
+        empty: 'No chores here.',
+        due_now: 'Due now',
+        due_today: 'Due today',
+        due_tomorrow: 'Due tomorrow',
+        due_in: 'Due in {days} days',
+        overdue: '{days} day overdue',
+        overdue_plural: '{days} days overdue',
+        last_done: 'Last done: {date}',
+        last_done_by: 'Last done: {date} by {person}',
+        done: 'Done',
+        unknown: 'Unknown',
+      },
+      de: {
+        empty: 'Keine Aufgaben hier.',
+        due_now: 'Jetzt fallig',
+        due_today: 'Heute fallig',
+        due_tomorrow: 'Morgen fallig',
+        due_in: 'Fallig in {days} Tagen',
+        overdue: '{days} Tag uberschritten',
+        overdue_plural: '{days} Tage uberschritten',
+        last_done: 'Zuletzt erledigt: {date}',
+        last_done_by: 'Zuletzt erledigt: {date} von {person}',
+        done: 'Erledigt',
+        unknown: 'Unbekannt',
+      },
+    };
+  }
+
+  _t(key, params) {
+    var lang = (this._hass && this._hass.locale && this._hass.locale.language) || 'en';
+    var langBase = lang.split('-')[0];
+    var strings = ChoresCard.STRINGS[langBase] || ChoresCard.STRINGS.en;
+    var str = strings[key] || ChoresCard.STRINGS.en[key] || key;
+    if (params) {
+      for (var k in params) {
+        str = str.replace('{' + k + '}', params[k]);
+      }
+    }
+    return str;
+  }
+
   setConfig(config) {
     if (!config) {
       throw new Error("Invalid configuration");
@@ -163,7 +207,7 @@ class ChoresCard extends HTMLElement {
       root.innerHTML = this._style() +
         '<div class="card">' +
           (this._config.title ? '<div class="header">' + this._escape(this._config.title) + '</div>' : '') +
-          '<div class="empty">No chores here.</div>' +
+          '<div class="empty">' + this._t('empty') + '</div>' +
         '</div>';
       return;
     }
@@ -194,12 +238,7 @@ class ChoresCard extends HTMLElement {
       return this._escape(this._getPersonName(id));
     }, this).join(', ');
 
-    var lastDoneBy = '';
-    if (a.last_done_by) {
-      lastDoneBy = ' by ' + this._escape(this._getPersonName(a.last_done_by));
-    }
-
-    var btn = '<button class="btn-done" data-entity="' + this._escape(entity.entity_id) + '">Done</button>';
+    var btn = '<button class="btn-done" data-entity="' + this._escape(entity.entity_id) + '">' + this._t('done') + '</button>';
 
     return '<div class="row ' + entity.state + '">' +
       '<ha-icon icon="' + this._escape(icon) + '" class="icon"></ha-icon>' +
@@ -207,10 +246,18 @@ class ChoresCard extends HTMLElement {
         '<div class="name">' + name + '</div>' +
         '<div class="meta ' + entity.state + '">' + dueInfo + '</div>' +
         (assignees ? '<div class="assignees"><ha-icon icon="mdi:account-multiple" class="mini-icon"></ha-icon>' + assignees + '</div>' : '') +
-        (a.last_done ? '<div class="last-done">Last done: ' + this._formatDate(a.last_done) + lastDoneBy + '</div>' : '') +
+        (a.last_done ? '<div class="last-done">' + this._formatLastDone(a.last_done, a.last_done_by) + '</div>' : '') +
       '</div>' +
       btn +
     '</div>';
+  }
+
+  _formatLastDone(lastDone, lastDoneBy) {
+    var date = this._formatDate(lastDone);
+    if (lastDoneBy) {
+      return this._t('last_done_by', { date: date, person: this._escape(this._getPersonName(lastDoneBy)) });
+    }
+    return this._t('last_done', { date: date });
   }
 
   _formatDate(isoStr) {
@@ -221,11 +268,16 @@ class ChoresCard extends HTMLElement {
   }
 
   _formatDue(state, days) {
-    if (days == null) return 'Due now';
-    if (days < 0) return Math.abs(days) + (Math.abs(days) === 1 ? ' day overdue' : ' days overdue');
-    if (days === 0) return 'Due today';
-    if (days === 1) return 'Due tomorrow';
-    return 'Due in ' + days + ' days';
+    if (days == null) return this._t('due_now');
+    if (days < 0) {
+      var absDays = Math.abs(days);
+      return absDays === 1
+        ? this._t('overdue', { days: absDays })
+        : this._t('overdue_plural', { days: absDays });
+    }
+    if (days === 0) return this._t('due_today');
+    if (days === 1) return this._t('due_tomorrow');
+    return this._t('due_in', { days: days });
   }
 
   _escape(str) {
