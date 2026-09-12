@@ -53,6 +53,8 @@ config/
 
 ### 3. Register the dashboard resource
 
+This step is required for the custom card to load. Without it, the dashboard will show an error that the card type `custom:chores-card` is not found.
+
 In Home Assistant:
 
 1. Go to **Settings > Dashboards**
