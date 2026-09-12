@@ -18,9 +18,9 @@ ATTR_LAST_DONE_BY = "last_done_by"
 ATTR_NEXT_DUE = "next_due"
 ATTR_ASSIGNEES = "assignees"
 ATTR_FREQUENCY = "frequency"
+ATTR_FREQUENCY_DAYS = "frequency_days"
 ATTR_COMPLETION_LOG = "completion_log"
 ATTR_DAYS_UNTIL_DUE = "days_until_due"
-ATTR_ACTIVE = "active"
 
 # Status values
 STATUS_DEACTIVATED = "deactivated"

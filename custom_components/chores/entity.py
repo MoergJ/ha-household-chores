@@ -14,6 +14,7 @@ from .const import (
     ATTR_COMPLETION_LOG,
     ATTR_DAYS_UNTIL_DUE,
     ATTR_FREQUENCY,
+    ATTR_FREQUENCY_DAYS,
     ATTR_LAST_DONE,
     ATTR_LAST_DONE_BY,
     ATTR_NEXT_DUE,
@@ -103,6 +104,9 @@ class ChoreEntity(SensorEntity):
             ATTR_FREQUENCY: format_frequency(
                 freq_type, freq_value, freq_unit, schedule
             ),
+            ATTR_FREQUENCY_DAYS: self._get_frequency_days(
+                freq_type, freq_value, freq_unit
+            ),
             ATTR_LAST_DONE: last_done,
             ATTR_LAST_DONE_BY: last_done_by,
             ATTR_NEXT_DUE: next_due.date().isoformat() if next_due else None,
@@ -144,6 +148,21 @@ class ChoreEntity(SensorEntity):
             return None
 
         return next_due
+
+    @staticmethod
+    def _get_frequency_days(
+        freq_type: str | None,
+        freq_value: int | None,
+        freq_unit: str | None,
+    ) -> int | None:
+        """Return the frequency interval in days, or None for schedule-based."""
+        from .const import FREQUENCY_TYPE_INTERVAL, FREQUENCY_UNIT_TO_DAYS
+
+        if freq_type != FREQUENCY_TYPE_INTERVAL:
+            return None
+        if freq_unit not in FREQUENCY_UNIT_TO_DAYS:
+            return None
+        return FREQUENCY_UNIT_TO_DAYS[freq_unit](freq_value)
 
     async def async_update(self) -> None:
         """Update the entity state.

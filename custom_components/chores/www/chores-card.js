@@ -228,6 +228,18 @@ class ChoresCard extends HTMLElement {
     });
   }
 
+  _canMarkDone(entity) {
+    if (entity.state === 'due') return true;
+    if (entity.state !== 'pending') return false;
+    var a = entity.attributes;
+    var days = a.days_until_due;
+    var freqDays = a.frequency_days;
+    // Schedule-based chores (no frequency_days): only allow on the due day.
+    if (!freqDays) return days != null && days <= 0;
+    // Interval-based: allow when less than half the interval is left.
+    return days != null && days <= freqDays / 2;
+  }
+
   _renderRow(entity) {
     var a = entity.attributes;
     var name = this._escape(a.friendly_name || entity.entity_id);
@@ -238,7 +250,9 @@ class ChoresCard extends HTMLElement {
       return this._escape(this._getPersonName(id));
     }, this).join(', ');
 
-    var btn = '<button class="btn-done" data-entity="' + this._escape(entity.entity_id) + '">' + this._t('done') + '</button>';
+    var btn = this._canMarkDone(entity)
+      ? '<button class="btn-done" data-entity="' + this._escape(entity.entity_id) + '">' + this._t('done') + '</button>'
+      : '';
 
     return '<div class="row ' + entity.state + '">' +
       '<ha-icon icon="' + this._escape(icon) + '" class="icon"></ha-icon>' +
