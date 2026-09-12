@@ -2,6 +2,8 @@
 
 A custom Home Assistant integration for managing household chores with recurring schedules, person assignments, and completion tracking.
 
+> **Disclaimer:** This is a work in progress. It is not production-ready and may contain bugs. Use at your own risk. No guarantees are made about data integrity or stability.
+
 ## Features
 
 - Each chore is a separate config entry, added via the HA UI
