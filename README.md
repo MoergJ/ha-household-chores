@@ -18,7 +18,17 @@ A custom Home Assistant integration for managing household chores with recurring
 
 ## Installation
 
-### 1. Copy the integration
+### Option A: HACS (recommended)
+
+1. Go to **Settings > HACS > Custom Repositories**
+2. Enter `https://github.com/MoergJ/ha-household-chores` as the repository URL
+3. Select category **Integration**
+4. Click **Add**
+5. Open HACS > **Integrations** and search for "Household Chores"
+6. Click **Download**
+7. Restart Home Assistant
+
+### Option B: Manual installation
 
 Copy the `custom_components/chores/` directory into your Home Assistant config directory:
 
@@ -46,7 +56,7 @@ config/
 
 If you already have a `custom_components/` directory, just add the `chores/` subdirectory.
 
-### 2. Restart Home Assistant
+### After installation
 
 Restart HA so it picks up the new integration. The custom Lovelace card is bundled with the integration and registered automatically on startup -- no manual resource setup or file copying needed.
 
