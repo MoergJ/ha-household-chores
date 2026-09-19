@@ -118,6 +118,30 @@ def test_calculate_next_due_schedule_never_done():
     assert result.hour == 0 and result.minute == 0
 
 
+def test_calculate_next_due_schedule_never_done_today():
+    """Never-done chore should be due today when today is a scheduled day."""
+    # mock_utcnow is 2026-09-12 (Saturday).
+    result = calculate_next_due(
+        FREQUENCY_TYPE_SCHEDULE, None,
+        schedule=["saturday"],
+    )
+    assert result.date() == mock_utcnow.date()
+    assert result.hour == 0 and result.minute == 0
+
+
+def test_calculate_next_due_schedule_same_day_as_last_done():
+    """Chore completed on a scheduled day rolls to the next occurrence."""
+    # last_done is 2026-09-12 (Saturday), schedule is Saturday only.
+    # Next due should be 2026-09-19, not the same day.
+    last_done = datetime(2026, 9, 12, 14, 0, 0, tzinfo=ZoneInfo("UTC"))
+    result = calculate_next_due(
+        FREQUENCY_TYPE_SCHEDULE, last_done,
+        schedule=["saturday"],
+    )
+    assert result.date() == datetime(2026, 9, 19).date()
+    assert result.hour == 0 and result.minute == 0
+
+
 def test_calculate_next_due_schedule_after_last_done():
     """Schedule-based chore: next scheduled day after last_done."""
     # last_done is 2026-09-07 (Monday), schedule is Monday+Thursday.
@@ -234,6 +258,8 @@ if __name__ == "__main__":
     test_calculate_next_due_interval_weeks()
     test_calculate_next_due_interval_months()
     test_calculate_next_due_schedule_never_done()
+    test_calculate_next_due_schedule_never_done_today()
+    test_calculate_next_due_schedule_same_day_as_last_done()
     test_calculate_next_due_schedule_after_last_done()
     test_calculate_status_due()
     test_calculate_status_pending()

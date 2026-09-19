@@ -3,12 +3,23 @@
 from __future__ import annotations
 
 import logging
+from datetime import datetime
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
-from .const import DOMAIN, PLATFORMS
+from .const import (
+    ATTR_LAST_DONE,
+    ATTR_NEXT_DUE,
+    CONF_FREQUENCY_TYPE,
+    CONF_FREQUENCY_UNIT,
+    CONF_FREQUENCY_VALUE,
+    CONF_SCHEDULE,
+    DOMAIN,
+    PLATFORMS,
+)
 from .frontend import async_register_frontend
+from .helpers import calculate_next_due
 from .services import async_setup_services
 from .storage import ChoreStorage
 
@@ -34,12 +45,57 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         storage = hass.data[DOMAIN]["storage"]
         await storage.async_load()
 
+    await _async_ensure_next_due(storage, entry)
+
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     # Reload entities when options are updated.
     entry.async_on_unload(entry.add_update_listener(_async_update_listener))
 
     return True
+
+
+def _parse_datetime(value: str | None) -> datetime | None:
+    """Parse an ISO datetime string, returning None for missing values."""
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value)
+    except (ValueError, TypeError):
+        return None
+
+
+async def _async_ensure_next_due(
+    storage: ChoreStorage, entry: ConfigEntry
+) -> None:
+    """Persist a stable next_due date for a chore that has none stored.
+
+    Without a stored value the due date is recomputed from now on every
+    state read, drifting past scheduled days before the first completion.
+    """
+    state = storage.get_chore_state(entry.entry_id)
+    if state.get(ATTR_NEXT_DUE):
+        return
+
+    last_done = _parse_datetime(state.get(ATTR_LAST_DONE))
+
+    try:
+        next_due = calculate_next_due(
+            entry.data.get(CONF_FREQUENCY_TYPE),
+            last_done,
+            entry.data.get(CONF_FREQUENCY_VALUE),
+            entry.data.get(CONF_FREQUENCY_UNIT),
+            entry.data.get(CONF_SCHEDULE),
+        )
+    except ValueError:
+        _LOGGER.error(
+            "Failed to calculate next_due for chore %s", entry.entry_id
+        )
+        return
+
+    await storage.async_update_chore_state(
+        entry.entry_id, {ATTR_NEXT_DUE: next_due.isoformat()}
+    )
 
 
 async def _async_update_listener(

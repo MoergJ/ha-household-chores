@@ -73,8 +73,14 @@ def calculate_next_due(
 
         reference = last_done if last_done is not None else now
 
-        # Find the next occurrence of any scheduled day after the reference date.
-        for offset in range(1, 8):
+        # A never-done chore anchors to today, so today itself counts as a
+        # due date. A completed chore anchors to last_done, so only days
+        # strictly after it are considered (completing a chore on a
+        # scheduled day must roll to the next occurrence).
+        start_offset = 0 if last_done is None else 1
+
+        # Find the next occurrence of any scheduled day from the reference.
+        for offset in range(start_offset, 8):
             candidate = reference + timedelta(days=offset)
             if candidate.weekday() in weekday_numbers:
                 # Normalize to midnight local time.

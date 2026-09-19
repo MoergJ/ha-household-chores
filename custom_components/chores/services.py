@@ -152,12 +152,23 @@ def async_setup_services(hass: HomeAssistant) -> None:
 
         found_chore_id, config = _find_chore_entry(hass, entity_id, chore_id)
 
+        freq_type = config.get(CONF_FREQUENCY_TYPE)
+        freq_value = config.get(CONF_FREQUENCY_VALUE)
+        freq_unit = config.get(CONF_FREQUENCY_UNIT)
+        schedule = config.get(CONF_SCHEDULE)
+
+        # Recompute from now so the chore gets a fresh, stable due date
+        # (due today if today is a scheduled day) instead of a floating one.
+        next_due = calculate_next_due(
+            freq_type, None, freq_value, freq_unit, schedule
+        )
+
         await storage.async_update_chore_state(
             found_chore_id,
             {
                 ATTR_LAST_DONE: None,
                 ATTR_LAST_DONE_BY: None,
-                ATTR_NEXT_DUE: None,
+                ATTR_NEXT_DUE: next_due.isoformat(),
                 ATTR_COMPLETION_LOG: [],
             },
         )
